@@ -1,0 +1,253 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Header Styling */
+#header {
+    width: 100%;
+    background-color: #008CBA;
+    padding: 15px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+#header a {
+    text-decoration: none;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+#nav {
+    margin-right: 20px;
+}
+
+#nav .nav-link {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+    font-size: 16px;
+    padding: 8px 12px;
+    background-color: #007BB5;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#nav .nav-link:hover {
+    background-color: #005f8a;
+}
+
+/* Body and Form Styling */
+body {
+    background-color: #f9f9f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+    width: 100%;
+    max-width: 600px;
+}
+
+form input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+form input[type="text"]:focus {
+    border-color: #008CBA;
+    outline: none;
+}
+
+form button {
+    padding: 10px 20px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #007BB5;
+}
+
+/* Products List Styling */
+ul {
+    list-style-type: none;
+    width: 100%;
+    max-width: 800px;
+    padding: 0;
+}
+
+li {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+li strong {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+li img {
+    margin-top: 10px;
+    border-radius: 5px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    form input[type="text"], form button {
+        width: 100%;
+        border-radius: 5px;
+        margin: 5px 0;
+    }
+
+    ul {
+        width: 100%;
+    }
+
+    li {
+        padding: 15px;
+    }
+}
+
+/* Footer Styling */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px 0;
+    width: 100%;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-section {
+    flex: 1;
+    margin: 10px;
+    min-width: 200px;
+}
+
+.footer-section h3 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.footer-section p, .footer-section ul, .footer-section a {
+    color: #b3b3b3;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #b3b3b3;
+    text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+    color: #ffffff;
+}
+
+.footer-section .social a {
+    margin: 0 5px;
+    display: inline-block;
+}
+
+.footer-section .social img {
+    width: 24px;
+    height: 24px;
+    filter: grayscale(100%);
+    transition: filter 0.3s;
+}
+
+.footer-section .social img:hover {
+    filter: grayscale(0%);
+}
+
+.footer-bottom {
+    background-color: #222;
+    padding: 10px 0;
+    text-align: center;
+    color: #b3b3b3;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-section {
+        margin: 10px 0;
+    }
+}

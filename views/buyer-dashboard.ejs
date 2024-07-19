@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Buyer Dashboard</title>
+    <link rel="stylesheet" href="/buyer-dashboard.css">
+</head>
+<body>
+    <section id="header">
+        <a href="/views/buyer-dashboard">Artisan Connect Kenya</a>
+        <div id="nav">
+            <a href="/logout">Logout</a>
+        </div>
+    </section>
+    
+    <form method="get" action="/views/buyer-dashboard">
+        <input type="text" name="q" value="<%= searchQuery %>" placeholder="Search for products...">
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Available Products</h2>
+    <ul>
+        <% products.forEach(product => { %>
+            <li>
+                <strong><%= product.product_name %></strong>: <%= product.product_description %> - $<%= product.price %>
+                <% if (product.product_image) { %>
+                    <br>
+                    <img src="/uploads/<%= product.product_image %>" alt="<%= product.product_name %>" style="width:200px;height:auto;">
+                <% } %>
+                <form action="/add-to-cart" method="post">
+                    <input type="hidden" name="productId" value="<%= product.product_id %>">
+                    <input type="number" name="quantity" value="1" min="1">
+                    <button type="submit">Add to Cart</button>
+                </form>
+                <!-- Debug line to show product ID -->
+                Product ID: <%= product.product_id %>
+            </li>
+        <% }) %>
+    </ul>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section about">
+                <h3>About Artisan Connect Kenya</h3>
+                <p>Artisan Connect Kenya connects buyers with talented artisans across Kenya. We help support local crafts and promote their work globally.</p>
+            </div>
+            <div class="footer-section links">
+                <h3>Useful Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/terms">Terms of Service</a></li>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h3>Contact Us</h3>
+                <p>Email: support@artisanconnectkenya.com</p>
+                <p>Phone: +254 700 123456</p>
+                <div class="social">
+                    <a href="https://facebook.com/artisanconnectkenya" target="_blank"><img src="/images/facebook-icon.png" alt="Facebook"></a>
+                    <a href="https://twitter.com/artisankenya" target="_blank"><img src="/images/twitter-icon.png" alt="Twitter"></a>
+                    <a href="https://instagram.com/artisanconnectkenya" target="_blank"><img src="/images/instagram-icon.png" alt="Instagram"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Artisan Connect Kenya. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

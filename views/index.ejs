@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <section id="header">
+        <a href="/">Artisan Connect Kenya</a>
+        <div id="nav">
+            <a href="/" class="nav-link">Signup</a>
+        </div>
+    </section>
+    
+    <div class="container">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <label for="role">Role:</label>
+            <select id="role" name="role" required>
+                <option value="buyer">Buyer</option>
+                <option value="artisan">Artisan</option>
+            </select>
+            <br>
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" id="phone_number" name="phone_number" required>
+            <br>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="/">Sign up here</a></p>
+    </div>
+    
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section about">
+                <h3>Artisan Connect Kenya</h3>
+                <p>Connecting local artisans with buyers worldwide. Our mission is to empower artisans through a sustainable platform.</p>
+            </div>
+            <div class="footer-section links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h4>Contact Us</h4>
+                <p>Email: support@artisanconnectkenya.com</p>
+                <p>Phone: +254-700-000-000</p>
+                <p>Address: Nairobi, Kenya</p>
+            </div>
+            <div class="footer-section social">
+                <h4>Follow Us</h4>
+                <a href="#"><img src="/images/facebook-icon.png" alt="Facebook"></a>
+                <a href="#"><img src="/images/twitter-icon.png" alt="Twitter"></a>
+                <a href="#"><img src="/images/instagram-icon.png" alt="Instagram"></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Artisan Connect Kenya. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

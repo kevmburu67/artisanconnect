@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/signup.css">
+</head>
+<body>
+    <section id="header">
+        <a href="/">Artisan Connect Kenya</a>
+        <div id="nav">
+            <a href="/login" class="nav-link">Login</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <h2>Sign Up</h2>
+        <form action="/signup" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <label for="role">Role:</label>
+            <select id="role" name="role" required>
+                <option value="buyer">Buyer</option>
+                <option value="artisan">Artisan</option>
+            </select>
+            <br>
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" id="phone_number" name="phone_number" required>
+            <br>
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section about">
+                <h3>About Artisan Connect Kenya</h3>
+                <p>Artisan Connect Kenya connects buyers with talented artisans across Kenya. We help support local crafts and promote their work globally.</p>
+            </div>
+            <div class="footer-section links">
+                <h3>Useful Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/terms">Terms of Service</a></li>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h3>Contact Us</h3>
+                <p>Email: support@artisanconnectkenya.com</p>
+                <p>Phone: +254 700 123456</p>
+                <div class="social">
+                    <a href="https://facebook.com/artisanconnectkenya" target="_blank"><img src="/images/facebook-icon.png" alt="Facebook"></a>
+                    <a href="https://twitter.com/artisankenya" target="_blank"><img src="/images/twitter-icon.png" alt="Twitter"></a>
+                    <a href="https://instagram.com/artisanconnectkenya" target="_blank"><img src="/images/instagram-icon.png" alt="Instagram"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Artisan Connect Kenya. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

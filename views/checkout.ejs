@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="/checkout.css">
+</head>
+<body>
+    <h1>Checkout</h1>
+    <h2>Your Cart</h2>
+    <ul>
+        <% cart.forEach(item => { %>
+            <li>
+                <strong><%= item.name %></strong>: $<%= item.price %> x <%= item.quantity %> = $<%= item.price * item.quantity %>
+            </li>
+        <% }) %>
+    </ul>
+    <h3>Total: $<%= cart.reduce((sum, item) => sum + item.price * item.quantity, 0) %></h3>
+    
+    <form action="/checkout" method="post">
+        <h3>Select Payment Method:</h3>
+        <label>
+            <input type="radio" name="paymentMethod" value="stripe" required>
+            Stripe
+        </label>
+        <label>
+            <input type="radio" name="paymentMethod" value="paypal" required>
+            PayPal
+        </label>
+        
+        <!-- Payment details (e.g., card information) should be handled securely. This is a placeholder. -->
+        <div id="stripe-payment" style="display: none;">
+            <h3>Stripe Payment Details:</h3>
+            <input type="text" name="paymentDetails[id]" placeholder="Payment ID">
+        </div>
+        
+        <div id="paypal-payment" style="display: none;">
+            <h3>PayPal Payment Details:</h3>
+            <input type="text" name="paymentDetails[id]" placeholder="Payment ID">
+        </div>
+
+        <button type="submit">Complete Checkout</button>
+    </form>
+    
+    <script>
+        const stripeRadio = document.querySelector('input[name="paymentMethod"][value="stripe"]');
+        const paypalRadio = document.querySelector('input[name="paymentMethod"][value="paypal"]');
+        const stripePayment = document.getElementById('stripe-payment');
+        const paypalPayment = document.getElementById('paypal-payment');
+
+        stripeRadio.addEventListener('change', () => {
+            stripePayment.style.display = 'block';
+            paypalPayment.style.display = 'none';
+        });
+
+        paypalRadio.addEventListener('change', () => {
+            stripePayment.style.display = 'none';
+            paypalPayment.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
