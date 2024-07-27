@@ -2,49 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Buyer Dashboard</title>
-    <link rel="stylesheet" href="/buyer-dashboard.css">
+    <title>Messages</title>
+    <link rel="stylesheet" href="/messages.css">
 </head>
 <body>
+    <!-- Header Section -->
     <section id="header">
         <a href="/views/buyer-dashboard">Artisan Connect Kenya</a>
         <div id="nav">
             <a href="/logout">Logout</a>
         </div>
     </section>
+
+    <!-- Messages Section -->
+    <h1>Messages with <%= otherUser %></h1>
     
-    <form method="get" action="/views/buyer-dashboard">
-        <input type="text" name="q" value="<%= searchQuery %>" placeholder="Search for products...">
-        <button type="submit">Search</button>
+    <div id="message-list">
+        <% messages.forEach(message => { %>
+            <div class="message <%= message.sender_username === username ? 'sent' : 'received' %>">
+                <p><%= message.content %></p>
+                <small><%= message.timestamp %></small>
+            </div>
+        <% }) %>
+    </div>
+    
+    <form action="/send-message" method="post">
+        <input type="hidden" name="recipient" value="<%= otherUser %>">
+        <textarea name="content" placeholder="Type your message here..." required></textarea>
+        <button type="submit">Send</button>
     </form>
 
-    <h2>Available Products</h2>
-    <ul>
-        <% products.forEach(product => { %>
-            <li>
-                <strong><%= product.product_name %></strong>: <%= product.product_description %> - $<%= product.price %>
-                <% if (product.product_image) { %>
-                    <br>
-                    <img src="/uploads/<%= product.product_image %>" alt="<%= product.product_name %>" style="width:200px;height:auto;">
-                <% } %>
-                <form action="/add-to-cart" method="post">
-                    <input type="hidden" name="productId" value="<%= product.product_id %>">
-                    <input type="number" name="quantity" value="1" min="1">
-                    <button type="submit">Add to Cart</button>
-                </form>
-                
-                <!-- New feature: Message Artisan -->
-                <form action="/messages" method="get">
-                    <input type="hidden" name="otherUser" value="<%= product.username %>">
-                    <button type="submit">Message Artisan</button>
-                </form>
+    <a href="/views/buyer-dashboard">Back to Dashboard</a>
 
-                <!-- Debug line to show product ID -->
-                Product ID: <%= product.product_id %>
-            </li>
-        <% }) %>
-    </ul>
-
+    <!-- Footer Section -->
     <footer>
         <div class="footer-content">
             <div class="footer-section about">

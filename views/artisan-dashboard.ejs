@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/artisan-dashboard.css">
 </head>
 <body>
+    <!-- Header Section -->
     <section id="header">
         <a href="/views/artisan-dashboard">Artisan Connect Kenya</a>
         <div id="nav">
@@ -15,6 +16,8 @@
     </section>
 
     <h1>Artisan Dashboard</h1>
+    
+    <!-- Product Upload Form -->
     <form action="/upload-product" method="POST" enctype="multipart/form-data">
         <label for="productName">Product Name:</label>
         <input type="text" id="productName" name="productName" required><br>
@@ -32,7 +35,10 @@
 
         <button type="submit">Upload Product</button>
     </form>
+    
     <hr>
+    
+    <!-- Artisan Products Section -->
     <h2>Your Products</h2>
     <ul>
         <% products.forEach(product => { %>
@@ -46,6 +52,41 @@
         <% }) %>
     </ul>
 
+    <hr>
+
+    <!-- Messaging Section -->
+    <h2>Messages</h2>
+    
+    <div id="message-users">
+        <h3>Message Users</h3>
+        <ul>
+            <% users.forEach(user => { %>
+                <li>
+                    <a href="/messages/<%= user.username %>"><%= user.username %></a>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+
+    <div id="message-list">
+        <h3>Conversation with <%= otherUser %></h3>
+        <% messages.forEach(message => { %>
+            <div class="message <%= message.sender_username === username ? 'sent' : 'received' %>">
+                <p><%= message.content %></p>
+                <small><%= message.timestamp %></small>
+            </div>
+        <% }) %>
+    </div>
+    
+    <form action="/send-message" method="post">
+        <input type="hidden" name="recipient" value="<%= otherUser %>">
+        <textarea name="content" placeholder="Type your message here..." required></textarea>
+        <button type="submit">Send</button>
+    </form>
+    
+    <hr>
+
+    <!-- Footer Section -->
     <footer>
         <div class="footer-content">
             <div class="footer-section about">

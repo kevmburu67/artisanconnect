@@ -241,155 +241,181 @@ app.post("/delete-product", [
 // Render the checkout page for Stripe payment
 app.get("/checkout-stripe", (req, res) => {
     const productId = req.query.productId;
-    const query = "SELECT * FROM products WHERE id = ?";
+    const query = "SELECT * FROM products WHERE product_id = ?";
     connection.query(query, [productId], (error, results) => {
         if (error) {
-            console.error("Error fetching product details:", error);
+            console.error("Error fetching product for checkout:", error);
             return res.status(500).send("Internal server error");
         }
         if (results.length === 0) {
             return res.status(404).send("Product not found");
         }
         const product = results[0];
-        res.render("checkout-stripe", { product: product, stripePublicKey: process.env.STRIPE_PUBLIC_KEY });
+        res.render("checkout-stripe", { product });
+    });
+});
+
+// Handle payment through Stripe
+app.post("/create-checkout-session", async (req, res) => {
+    const { productId } = req.body;
+
+    const query = "SELECT * FROM products WHERE product_id = ?";
+    connection.query(query, [productId], async (error, results) => {
+        if (error) {
+            console.error("Error fetching product for payment:", error);
+            return res.status(500).send("Internal server error");
+        }
+        if (results.length === 0) {
+            return res.status(404).send("Product not found");
+        }
+        const product = results[0];
+
+        try {
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: [{
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: product.product_name,
+                            description: product.product_description
+                        },
+                        unit_amount: product.price * 100,
+                    },
+                    quantity: 1,
+                }],
+                mode: 'payment',
+                success_url: `${req.headers.origin}/success`,
+                cancel_url: `${req.headers.origin}/cancel`,
+            });
+
+            res.json({ id: session.id });
+        } catch (err) {
+            console.error("Error creating Stripe checkout session:", err);
+            res.status(500).send("Internal server error");
+        }
     });
 });
 
 // Render the checkout page for PayPal payment
 app.get("/checkout-paypal", (req, res) => {
     const productId = req.query.productId;
-    const query = "SELECT * FROM products WHERE id = ?";
+    const query = "SELECT * FROM products WHERE product_id = ?";
     connection.query(query, [productId], (error, results) => {
         if (error) {
-            console.error("Error fetching product details:", error);
+            console.error("Error fetching product for checkout:", error);
             return res.status(500).send("Internal server error");
         }
         if (results.length === 0) {
             return res.status(404).send("Product not found");
         }
         const product = results[0];
-        res.render("checkout-paypal", { product: product, paypalClientId: process.env.PAYPAL_CLIENT_ID });
+        res.render("checkout-paypal", { product });
     });
 });
 
-// Handle Stripe payment
-app.post("/stripe-payment", async (req, res) => {
-    const { productId, token } = req.body;
+// Handle payment through PayPal
+app.post("/create-paypal-transaction", async (req, res) => {
+    const { productId } = req.body;
 
-    try {
-        const query = "SELECT * FROM products WHERE id = ?";
-        connection.query(query, [productId], async (error, results) => {
-            if (error) {
-                console.error("Error fetching product details:", error);
-                return res.status(500).send("Internal server error");
-            }
-            if (results.length === 0) {
-                return res.status(404).send("Product not found");
-            }
-            const product = results[0];
-
-            const charge = await stripe.charges.create({
-                amount: Math.round(product.price * 100), // Stripe amount in cents
-                currency: "usd",
-                description: product.product_description,
-                source: token
-            });
-
-            console.log("Payment successful:", charge);
-            res.send("Payment successful");
-        });
-    } catch (error) {
-        console.error("Error processing Stripe payment:", error);
-        res.status(500).send("Internal server error");
-    }
-});
-
-// Handle PayPal payment
-app.post("/paypal-payment", async (req, res) => {
-    const { productId, orderId } = req.body;
-
-    const request = new paypal.orders.OrdersGetRequest(orderId);
-    try {
-        const order = await paypalClient.execute(request);
-        const query = "SELECT * FROM products WHERE id = ?";
-        connection.query(query, [productId], async (error, results) => {
-            if (error) {
-                console.error("Error fetching product details:", error);
-                return res.status(500).send("Internal server error");
-            }
-            if (results.length === 0) {
-                return res.status(404).send("Product not found");
-            }
-            const product = results[0];
-            if (order.result.purchase_units[0].amount.value == product.price) {
-                console.log("Payment successful:", order);
-                res.send("Payment successful");
-            } else {
-                console.error("Payment amount mismatch");
-                res.status(400).send("Payment amount mismatch");
-            }
-        });
-    } catch (error) {
-        console.error("Error processing PayPal payment:", error);
-        res.status(500).send("Internal server error");
-    }
-});
-
-// Handle user logout
-app.get('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            console.error("Error destroying session during logout:", err);
-            return res.status(500).send("Internal server error");
-        }
-        res.redirect('/login');
-    });
-});
-
-// Serve the portfolio page for artisans
-app.get("/views/portfolio", (req, res) => {
-    const username = req.query.username;
-    const query = "SELECT * FROM users WHERE username = ?";
-    connection.query(query, [username], (error, results) => {
+    const query = "SELECT * FROM products WHERE product_id = ?";
+    connection.query(query, [productId], async (error, results) => {
         if (error) {
-            console.error("Error fetching user details for portfolio:", error);
+            console.error("Error fetching product for payment:", error);
             return res.status(500).send("Internal server error");
         }
-        if (results.length > 0) {
-            const user = results[0];
-            res.render("portfolio", { user: user });
-        } else {
-            return res.status(404).send("User not found");
+        if (results.length === 0) {
+            return res.status(404).send("Product not found");
+        }
+        const product = results[0];
+
+        const request = new paypal.orders.OrdersCreateRequest();
+        request.requestBody({
+            intent: "CAPTURE",
+            purchase_units: [{
+                amount: {
+                    currency_code: "USD",
+                    value: product.price.toFixed(2),
+                },
+                description: product.product_description,
+            }],
+        });
+
+        try {
+            const order = await paypalClient.execute(request);
+            res.json({ id: order.result.id });
+        } catch (err) {
+            console.error("Error creating PayPal transaction:", err);
+            res.status(500).send("Internal server error");
         }
     });
 });
 
-// Handle portfolio updates
-app.post("/update-portfolio", [
-    check("username").notEmpty().withMessage("Username is required"),
-    check("bio").notEmpty().withMessage("Bio is required"),
-    check("skills").notEmpty().withMessage("Skills are required")
+// Middleware to check authentication
+function isAuthenticated(req, res, next) {
+    if (req.session.user) {
+        return next();
+    }
+    res.redirect('/login');
+}
+
+// Route to render messages between buyer and artisan
+app.get("/messages", isAuthenticated, (req, res) => {
+    const username = req.session.user.username;
+    const otherUser = req.query.otherUser;
+
+    const query = `
+        SELECT * FROM messages 
+        WHERE (sender_username = ? AND recipient_username = ?) 
+           OR (sender_username = ? AND recipient_username = ?)
+        ORDER BY timestamp ASC
+    `;
+    connection.query(query, [username, otherUser, otherUser, username], (error, results) => {
+        if (error) {
+            console.error("Error fetching messages:", error);
+            return res.status(500).send("Internal server error");
+        }
+        res.render("messages", { messages: results, otherUser, username });
+    });
+});
+
+// Endpoint to send a message
+app.post("/send-message", isAuthenticated, [
+    check("recipient").notEmpty().withMessage("Recipient is required"),
+    check("content").notEmpty().withMessage("Message content is required")
 ], (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).send(errors.array());
     }
 
-    const { username, bio, skills } = req.body;
+    const sender = req.session.user.username;
+    const { recipient, content } = req.body;
 
-    const query = "UPDATE users SET bio = ?, skills = ? WHERE username = ?";
-    connection.query(query, [bio, skills, username], (error, results) => {
+    const query = "INSERT INTO messages (sender_username, recipient_username, content) VALUES (?, ?, ?)";
+    connection.query(query, [sender, recipient, content], (error, results) => {
         if (error) {
-            console.error("Error updating portfolio:", error);
+            console.error("Error sending message:", error);
             return res.status(500).send("Internal server error");
         }
-        console.log("Portfolio updated successfully:", results);
-        res.redirect(`/views/artisan-dashboard?username=${username}`);
+        console.log("Message sent successfully:", results);
+        res.redirect("back");
+    });
+});
+
+// Handle logout
+app.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Error during logout:", err);
+            return res.status(500).send("Internal server error");
+        }
+        res.redirect("/login");
     });
 });
 
 // Start the server
-const port = process.env.PORT || 5500;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+const PORT = process.env.PORT || 5500;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
